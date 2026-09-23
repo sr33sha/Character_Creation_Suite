@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<!-- saved from url=(0092)file:///C:/Users/srish/Documents/Codex/2026-07-22/see/outputs/bot-card-builder-polished.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>Case File — Character Builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com/">
+<link href="./Case File — Character Builder_files/css2" rel="stylesheet">
+<style>
+  :root{
+    --ink:#15120e;
+    --panel:#1d1811;
+    --panel-raised:#251f16;
+    --hair:#3a3222;
+    --paper:#e7ddc8;
+    --paper-dim:#a89a80;
+    --brass:#b8874f;
+    --brass-bright:#d9a862;
+    --rust:#8a4a3a;
+    --sage:#6b7a5e;
+    --stamp-red:#8a3324;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.012) 0px, rgba(255,255,255,0.012) 1px, transparent 1px, transparent 3px),
+      radial-gradient(ellipse at top left, #1c170f 0%, var(--ink) 60%);
+    color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    min-height:100vh;
+  }
+  .wrap{width:100%;max-width:1600px;margin:0 auto;padding:28px 20px 80px;}
+
+  /* header */
+  .masthead{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    border-bottom:2px solid var(--hair);
+    padding-bottom:16px;margin-bottom:22px;
+    position:relative;
+  }
+  .masthead h1{
+    font-family:'Spectral', serif;
+    font-weight:600;
+    font-size:2rem;
+    letter-spacing:0.5px;
+    margin:0;
+    color:var(--paper);
+  }
+  .masthead .sub{
+    font-size:0.72rem;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin-top:4px;
+  }
+  .stamp{
+    position:absolute; top:-6px; right:0;
+    border:2.5px solid var(--stamp-red);
+    color:var(--stamp-red);
+    font-family:'IBM Plex Mono',monospace;
+    font-weight:600;
+    font-size:0.68rem;
+    letter-spacing:2px;
+    padding:5px 10px;
+    border-radius:3px;
+    transform:rotate(-6deg);
+    opacity:0.85;
+    text-transform:uppercase;
+    transition:all 0.3s ease;
+    user-select:none;
+  }
+
+  /* toolbar */
+  .toolbar{
+    display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+    margin-bottom:20px;
+    padding:12px 14px;
+    background:var(--panel);
+    border:1px solid var(--hair);
+    border-radius:4px;
+  }
+  .toolbar select, .toolbar input[type=text]{
+    background:var(--ink);
+    color:var(--paper);
+    border:1px solid var(--hair);
+    border-radius:3px;
+    padding:7px 10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.82rem;
+  }
+  button{
+    background:var(--panel-raised);
+    color:var(--paper);
+    border:1px solid var(--hair);
+    border-radius:3px;
+    padding:7px 12px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.78rem;
+    cursor:pointer;
+    letter-spacing:0.3px;
+    transition:border-color 0.15s, color 0.15s;
+  }
+  button:hover{border-color:var(--brass);color:var(--brass-bright);}
+  button.primary{background:var(--brass);color:var(--ink);border-color:var(--brass);font-weight:600;}
+  button.primary:hover{background:var(--brass-bright);color:var(--ink);}
+  button.danger:hover{border-color:var(--rust);color:#d38a7a;}
+  .spacer{flex:1;}
+  .status-msg{font-size:0.72rem;color:var(--sage);min-height:1em;}
+
+  /* layout */
+  .body-grid{display:grid;grid-template-columns:minmax(180px,220px) minmax(0,1fr);gap:20px;}
+  @media (max-width:1100px){
+    .body-grid{grid-template-columns:1fr;}
+    .tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:6px;}
+    .tab{border-right:1px solid var(--hair);border-radius:4px;}
+  }
+
+  /* folder tabs */
+  .tabs{display:flex;flex-direction:column;gap:4px;min-width:0;}
+  .tab{
+    background:var(--panel);
+    border:1px solid var(--hair);
+    color:var(--paper-dim);
+    padding:10px 12px;
+    font-size:0.74rem;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    cursor:pointer;
+    border-radius:4px;
+    text-align:left;white-space:normal;overflow-wrap:anywhere;line-height:1.35;min-width:0;
+    position:relative;
+  }
+  .tab:hover{color:var(--paper);}
+  .tab.active{
+    background:var(--panel-raised);
+    color:var(--brass-bright);
+    border-color:var(--brass);
+    font-weight:600;
+    box-shadow:0 0 0 1px rgba(184,135,79,0.18), 0 0 14px rgba(184,135,79,0.12);
+  }
+  .tab .count{
+    float:right;color:var(--sage);font-size:0.68rem;
+  }
+
+  /* section panel */
+  .panel{
+    background:var(--panel-raised);
+    border:1px solid var(--hair);
+    border-radius:4px;
+    padding:22px 24px;
+    min-height:420px;
+  }
+  .panel h2{
+    font-family:'Spectral',serif;
+    font-size:1.15rem;
+    color:var(--brass-bright);
+    margin:0 0 4px;
+    letter-spacing:0.5px;
+  }
+  .panel .hint{color:var(--paper-dim);font-size:0.74rem;margin-bottom:18px;}
+
+  .field-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;}
+  .field-grid.single{grid-template-columns:1fr;}
+  .field{display:flex;flex-direction:column;gap:5px;}
+  .field label{font-size:0.7rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--paper-dim);}
+  .field input[type=text], .field textarea{
+    background:var(--ink);
+    border:1px solid var(--hair);
+    border-radius:3px;
+    color:var(--paper);
+    padding:9px 10px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.86rem;
+    resize:vertical;
+  }
+  .field input:focus, .field textarea:focus{outline:none;border-color:var(--brass);}
+  .field textarea{min-height:70px;line-height:1.5;}
+
+  /* dynamic lists */
+  .list-block{margin-bottom:20px;}
+  .list-block > label{font-size:0.7rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--paper-dim);display:block;margin-bottom:8px;}
+  .list-row{display:flex;gap:8px;margin-bottom:8px;align-items:flex-start;}
+  .list-row input, .list-row textarea{flex:1;}
+  .list-row .rm{
+    background:none;border:1px solid var(--hair);color:var(--paper-dim);
+    padding:6px 9px;font-size:0.7rem;flex:none;
+  }
+  .list-row .rm:hover{border-color:var(--rust);color:#d38a7a;}
+  .add-btn{font-size:0.72rem;padding:6px 11px;}
+  .rel-row{display:flex;gap:8px;margin-bottom:8px;}
+  .rel-row input.rel-name{flex:0 0 140px;}
+  .rel-row input.rel-desc{flex:1;}
+  .rel-row.fixed{opacity:0.85;}
+
+  /* export panel */
+  .export-wrap{margin-top:24px;}
+  .export-wrap h2{font-family:'Spectral',serif;color:var(--brass-bright);font-size:1.1rem;margin:0 0 10px;}
+  #exportBox{
+    width:100%;min-height:260px;
+    background:var(--ink);
+    border:1px solid var(--hair);
+    border-radius:4px;
+    color:var(--paper);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.8rem;
+    line-height:1.55;
+    padding:16px;
+    white-space:pre-wrap;
+  }
+  .export-actions{display:flex;gap:8px;margin-top:10px;}
+  .custom-fields{margin-top:22px;padding-top:18px;border-top:1px dashed var(--hair);}
+  .custom-fields > label{font-size:0.7rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--paper-dim);display:block;margin-bottom:8px;}
+  .custom-row{display:grid;grid-template-columns:minmax(125px,0.35fr) 1fr auto;gap:8px;margin-bottom:8px;align-items:start;}
+  .custom-row input,.custom-row textarea{width:100%;}
+  .custom-row textarea{min-height:46px;}
+  .custom-section{background:var(--ink);border:1px solid var(--hair);border-radius:4px;padding:14px;margin-bottom:12px;}
+  .custom-section input,.custom-section textarea{width:100%;margin-bottom:8px;}
+  .custom-section textarea{min-height:150px;}
+  .subsection-list{margin:8px 0 12px 12px;padding:12px;border-left:2px solid var(--brass);background:rgba(0,0,0,0.12);}
+  .subsection-list > label{display:block;margin-bottom:8px;font-size:0.7rem;letter-spacing:1.2px;text-transform:uppercase;color:var(--paper-dim);}
+  .custom-subsection{padding:10px;margin:8px 0;border:1px solid var(--hair);border-radius:3px;}
+  .custom-subsection textarea{min-height:90px;}
+  @media (max-width:520px){.wrap{padding:18px 14px 56px;}.masthead h1{font-size:1.7rem;}.toolbar{padding:10px;}.custom-row{grid-template-columns:1fr auto;}.custom-row textarea{grid-column:1 / -1;}.tabs{grid-template-columns:1fr;}.tab{padding:10px 12px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead">
+    <div>
+      <h1>Case File</h1>
+      <div class="sub">Character Dossier Builder</div>
+    </div>
+    <div class="stamp" id="completionStamp" style="border-color: var(--stamp-red); color: var(--stamp-red);">DRAFT</div>
+  </div>
+
+  <div class="toolbar">
+    <select id="cardSelect"><option value="">— new file —</option></select>
+    <button id="loadBtn">Open saved</button>
+    <button id="importBtn">Import .txt</button>
+    <input id="importFile" type="file" accept=".txt,text/plain" hidden="">
+    <input type="text" id="cardNameInput" placeholder="file name" style="width:160px;">
+    <button id="saveBtn" class="primary">Save</button>
+    <button id="duplicateBtn">Duplicate</button>
+    <button id="deleteBtn" class="danger">Delete</button>
+    <button id="exportJsonBtn" title="Reliable save — writes a .json file to disk, unaffected by browser storage settings">Save to file (.json)</button>
+    <button id="importJsonBtn" title="Load a character previously saved with 'Save to file (.json)'">Load from file (.json)</button>
+    <input id="importJsonFile" type="file" accept=".json,application/json" hidden="">
+    <div class="spacer"></div>
+    <span class="status-msg" id="statusMsg"></span>
+  </div>
+
+
+  <div class="body-grid">
+    <div class="tabs" id="tabs"><button class="tab active">Identity</button><button class="tab">Appearance</button><button class="tab">Clothing</button><button class="tab">Personality</button><button class="tab">Speech</button><button class="tab">Relationships</button><button class="tab">Setting &amp; Background</button><button class="tab">Traits &amp; Preferences</button><button class="tab">Intimacy &amp; Desire</button><button class="tab">Forms, Timelines &amp; More</button><button class="tab">Goals &amp; Secrets</button><button class="tab">Notes</button></div>
+    <div class="panel" id="panelHost"><h2>Identity</h2><div class="field-grid"><div class="field" style="grid-column:auto">
+    <label>Name</label>
+    <input type="text" data-key="name" value="">
+  </div><div class="field" style="grid-column:auto">
+    <label>Nicknames</label>
+    <input type="text" data-key="nicknames" value="">
+  </div><div class="field" style="grid-column:auto">
+    <label>Pronouns</label>
+    <input type="text" data-key="pronouns" value="">
+  </div><div class="field" style="grid-column:auto">
+    <label>Sex / Gender</label>
+    <input type="text" data-key="sexGender" value="">
+  </div><div class="field" style="grid-column:auto">
+    <label>Sexual Orientation</label>
+    <input type="text" data-key="orientation" value="">
+  </div><div class="field" style="grid-column:auto">
+    <label>Species</label>
+    <input type="text" data-key="species" value="">
+  </div><div class="field" style="grid-column:auto">
+    <label>Ethnicity</label>
+    <input type="text" data-key="ethnicity" value="">
+  </div><div class="field" style="grid-column:auto">
+    <label>Age</label>
+    <input type="text" data-key="age" value="">
+  </div><div class="field" style="grid-column:auto">
+    <label>Occupation</label>
+    <input type="text" data-key="occupation" value="">
+  </div></div><div class="custom-fields"><label>Extra fields for this section</label>
+    <button class="add-btn" id="addCustomField">+ add custom field</button></div></div>
+  </div>
+
+  <div class="export-wrap">
+    <h2>Generated File</h2>
+    <textarea id="exportBox" readonly=""></textarea>
+    <div class="export-actions">
+      <button id="copyBtn" class="primary">Copy to Clipboard</button>
+      <button id="downloadBtn">Download .txt</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+
+// Works in a normal browser file as well as environments that provide window.storage.
+const storage = (window.storage && typeof window.storage.list === 'function') ? window.storage : {
+  list: async prefix => ({keys: Array.from({length: localStorage.length}, (_, i) => localStorage.key(i)).filter(key => key && key.startsWith(prefix))}),
+  get: async key => ({value: localStorage.getItem(key)}),
+  set: async (key, value) => { localStorage.setItem(key, value); },
+  delete: async key => { localStorage.removeItem(key); },
+};
+
+const FIXED_FIELDS = [
+  {key:'name', label:'Name', section:'identity'},
+  {key:'nicknames', label:'Nicknames', section:'identity'},
+  {key:'pronouns', label:'Pronouns', section:'identity'},
+  {key:'sexGender', label:'Sex / Gender', section:'identity'},
+  {key:'orientation', label:'Sexual Orientation', section:'identity'},
+  {key:'species', label:'Species', section:'identity'},
+  {key:'ethnicity', label:'Ethnicity', section:'identity'},
+  {key:'age', label:'Age', section:'identity'},
+  {key:'occupation', label:'Occupation', section:'identity'},
+
+  {key:'height', label:'Height', section:'appearance', wide:true, area:true},
+  {key:'build', label:'Build', section:'appearance', wide:true, area:true},
+  {key:'hair', label:'Hair', section:'appearance', wide:true, area:true},
+  {key:'eyes', label:'Eyes', section:'appearance', wide:true, area:true},
+  {key:'skin', label:'Skin Tone', section:'appearance', wide:true, area:true},
+  {key:'scent', label:'Scent', section:'appearance', wide:true, area:true},
+  {key:'notable', label:'Notable Features', section:'appearance', wide:true, area:true},
+  {key:'privates', label:'Privates', section:'appearance', wide:true, area:true},
+
+  {key:'workOutfit', label:'Work Outfit', section:'clothing', wide:true, area:true},
+  {key:'casualOutfit', label:'Casual Outfit', section:'clothing', wide:true, area:true},
+
+  {key:'primaryLang', label:'Primary Language', section:'speech'},
+  {key:'accent', label:'Accent & Manner of Speech', section:'speech', wide:true, area:true},
+
+  {key:'time', label:'Time', section:'setting'},
+  {key:'location', label:'Location', section:'setting'},
+  {key:'backstory', label:'Backstory', section:'setting', wide:true, area:true},
+  {key:'currentStory', label:'Current Story / Status Quo', section:'setting', wide:true, area:true},
+
+  {key:'quirks', label:'Quirks', section:'traits', wide:true, area:true},
+  {key:'likes', label:'Likes', section:'traits', wide:true, area:true},
+  {key:'dislikes', label:'Dislikes', section:'traits', wide:true, area:true},
+  {key:'hobbies', label:'Hobbies', section:'traits', wide:true, area:true},
+
+  {key:'kinks', label:'Kinks', section:'intimacy', wide:true, area:true},
+  {key:'boundaries', label:'Boundaries / Limits', section:'intimacy', wide:true, area:true},
+];
+
+const LIST_FIELDS = [
+  {key:'personality', section:'personality', label:'Traits (bullet list)'},
+  {key:'speechExamples', section:'speech', label:'Speech Examples', quoted:true},
+  {key:'sexBehavior', section:'intimacy', label:"{{char}}'s Behavior During Sex"},
+  {key:'goals', section:'goals', label:'Goals'},
+  {key:'secrets', section:'goals', label:'Secrets & Other Information'},
+  {key:'notes', section:'notes', label:'Notes'},
+];
+
+const SECTIONS = [
+  {key:'identity', label:'Identity'},
+  {key:'appearance', label:'Appearance'},
+  {key:'clothing', label:'Clothing'},
+  {key:'personality', label:'Personality'},
+  {key:'speech', label:'Speech'},
+  {key:'relationships', label:'Relationships'},
+  {key:'setting', label:'Setting & Background'},
+  {key:'traits', label:'Traits & Preferences'},
+  {key:'intimacy', label:'Intimacy & Desire'},
+  {key:'custom', label:'Forms, Timelines & More'},
+  {key:'goals', label:'Goals & Secrets'},
+  {key:'notes', label:'Notes'},
+];
+
+function blankState(){
+  const s = {relationships: [], userRelationship: '', customFields: {}, customSections: []};
+  FIXED_FIELDS.forEach(f => s[f.key] = '');
+  LIST_FIELDS.forEach(f => s[f.key] = ['']);
+  SECTIONS.filter(sec=>sec.key!=='custom').forEach(sec=>s.customFields[sec.key]=[]);
+  return s;
+}
+
+function normaliseState(){
+  if(!state.customFields) state.customFields = {};
+  if(!state.customSections) state.customSections = [];
+  state.customSections.forEach(section=>{
+    if(!Array.isArray(section.subsections)) section.subsections = [];
+  });
+  SECTIONS.filter(sec=>sec.key!=='custom').forEach(sec=>{
+    if(!Array.isArray(state.customFields[sec.key])) state.customFields[sec.key] = [];
+  });
+}
+
+let state = blankState();
+let currentSection = 'identity';
+let currentFile = null; // saved file name
+let cardList = [];
+
+function genId(){ return 'card_' + Date.now() + '_' + Math.random().toString(36).slice(2,7); }
+
+async function loadCardList(){
+  try{
+    const res = await storage.list('cards:');
+    cardList = (res && res.keys) ? res.keys : [];
+  }catch(e){ cardList = []; }
+  const sel = document.getElementById('cardSelect');
+  sel.innerHTML = '<option value="">— new file —</option>';
+  for(const k of cardList){
+    const name = k.replace('cards:','');
+    const opt = document.createElement('option');
+    opt.value = k; opt.textContent = name;
+    sel.appendChild(opt);
+  }
+}
+
+async function saveCard(){
+  const name = document.getElementById('cardNameInput').value.trim();
+  if(!name){ setStatus('Name your file before saving.'); return; }
+  const key = 'cards:' + name;
+  const payload = JSON.stringify(state);
+  try{
+    await storage.set(key, payload, false);
+    // Verify the write actually took. Browser storage on file:// pages can
+    // silently no-op (no exception, no persisted data) depending on browser
+    // settings — so we read it back before telling the user it's safe.
+    const check = await storage.get(key, false);
+    if(!check || check.value !== payload){
+      setStatus('⚠ Browser storage isn\'t persisting on this page (common when opening a local file directly). Use "Save to file (.json)" instead — it always works.');
+      return;
+    }
+    currentFile = key;
+    setStatus('Saved "' + name + '".');
+    await loadCardList();
+    document.getElementById('cardSelect').value = key;
+  }catch(e){ setStatus('⚠ Browser storage blocked this save. Use "Save to file (.json)" instead — it always works.'); }
+}
+
+function exportCardJson(){
+  const name = document.getElementById('cardNameInput').value.trim() || 'character';
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  setStatus('Downloaded "' + name + '.json". Keep this file — it fully restores the character via "Load from file (.json)".');
+}
+
+function importCardJson(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const parsed = JSON.parse(reader.result);
+      state = parsed;
+      normaliseState();
+      currentFile = null;
+      const nameFromFile = file.name.replace(/\.json$/i, '');
+      document.getElementById('cardNameInput').value = state.name || nameFromFile;
+      setStatus('Loaded "' + (state.name || nameFromFile) + '" from file.');
+      render();
+    }catch(e){ setStatus('That file isn\'t a valid character JSON export.'); }
+  };
+  reader.onerror = () => setStatus('Could not read that file.');
+  reader.readAsText(file);
+}
+
+async function openCard(){
+  const key = document.getElementById('cardSelect').value;
+  if(!key){ state = blankState(); currentFile=null; document.getElementById('cardNameInput').value=''; render(); return; }
+  try{
+    const res = await storage.get(key, false);
+    if(res && res.value){
+      state = JSON.parse(res.value);
+      normaliseState();
+      currentFile = key;
+      document.getElementById('cardNameInput').value = key.replace('cards:','');
+      setStatus('Opened "' + key.replace('cards:','') + '".');
+      render();
+    }
+  }catch(e){ setStatus('Could not open that file.'); }
+}
+
+async function deleteCard(){
+  const key = document.getElementById('cardSelect').value;
+  if(!key){ setStatus('Nothing selected to delete.'); return; }
+  if(!confirm('Delete "' + key.replace('cards:','') + '" permanently?')) return;
+  try{
+    await storage.delete(key, false);
+    setStatus('Deleted.');
+    state = blankState(); currentFile = null;
+    document.getElementById('cardNameInput').value='';
+    await loadCardList();
+    render();
+  }catch(e){ setStatus('Delete failed.'); }
+}
+
+function duplicateCard(){
+  const baseName = document.getElementById('cardNameInput').value.trim() || 'untitled';
+  document.getElementById('cardNameInput').value = baseName + ' copy';
+  currentFile = null;
+  setStatus('Duplicated in-editor — hit Save to store it as a new file.');
+}
+
+const IMPORT_SECTIONS = {
+  'identity':'identity', 'appearance':'appearance', 'clothing':'clothing', 'personality':'personality',
+  'speech':'speech', 'relationships':'relationships', 'setting & background':'setting',
+  'traits & preferences':'traits', 'intimacy & desire':'intimacy', 'goals & secrets':'goals', 'notes':'notes'
+};
+const IMPORT_LABELS = {
+  'name':'name', 'nicknames':'nicknames', 'pronouns':'pronouns', 'sex':'sexGender', 'sex / gender':'sexGender',
+  'sexual orientation':'orientation', 'species':'species', 'ethnicity':'ethnicity', 'age':'age', 'occupation':'occupation',
+  'height':'height', 'build':'build', 'hair':'hair', 'eyes':'eyes', 'skin tone':'skin', 'scent':'scent',
+  'notable features':'notable', 'privates':'privates', 'work outfit':'workOutfit', 'casual outfit':'casualOutfit',
+  'outfit':'workOutfit', 'primary language':'primaryLang', 'languages':'primaryLang', 'accent & manner of speech':'accent',
+  'time':'time', 'current time':'time', 'location':'location', 'current location':'location', 'backstory':'backstory',
+  'current story / status quo':'currentStory', 'current scenario':'currentStory', 'quirks':'quirks', 'likes':'likes',
+  'dislikes':'dislikes', 'hobbies':'hobbies', 'kinks':'kinks', 'turn ons':'kinks', 'boundaries / limits':'boundaries',
+  'turn offs':'boundaries'
+};
+
+function cleanImportedValue(value){ return value.replace(/^\s+|\s+$/g,''); }
+function importedBullets(value){
+  const items = [...value.matchAll(/^\s*-\s+(.+)$/gm)].map(match=>match[1].trim());
+  return items.length ? items : (cleanImportedValue(value) ? [cleanImportedValue(value)] : ['']);
+}
+function addImportedCustomField(section,label,value){
+  if(label && value) state.customFields[section].push({label:label.trim(),value:cleanImportedValue(value)});
+}
+function importCardText(text){
+  state = blankState();
+  const sections = [];
+  const heading = /^##\s+(.+?)\s*$/gm;
+  let match, last = null;
+  while((match = heading.exec(text))){
+    if(last) last.body = text.slice(last.end, match.index);
+    last = {title:match[1].trim(), end:heading.lastIndex, body:''};
+    sections.push(last);
+  }
+  if(last) last.body = text.slice(last.end);
+  if(!sections.length){ state.customSections.push({title:'Imported Card',body:text,subsections:[]}); return; }
+
+  sections.forEach(imported=>{
+    const sectionTitle = imported.title.toLowerCase().replace(/\s*\([^)]*\)\s*$/,'');
+    const key = IMPORT_SECTIONS[sectionTitle];
+    const body = cleanImportedValue(imported.body.replace(/^---\s*$/gm,''));
+    if(!key){ state.customSections.push({title:imported.title,body,subsections:[]}); return; }
+    const blocks = [];
+    const labels = [];
+    const labelPattern = /^\*\*([^*\n]+?)\*\*:\s*/gm;
+    let block;
+    while((block = labelPattern.exec(body))) labels.push({label:block[1].trim(), start:block.index, valueStart:labelPattern.lastIndex});
+    labels.forEach((label,index)=>{
+      const valueEnd = index + 1 < labels.length ? labels[index + 1].start : body.length;
+      blocks.push({label:label.label,value:cleanImportedValue(body.slice(label.valueStart,valueEnd))});
+    });
+    const knownLabels = new Set();
+    blocks.forEach(({label,value})=>{
+      const lower = label.toLowerCase();
+      const field = IMPORT_LABELS[lower];
+      if(field){ state[field] = value; knownLabels.add(label); return; }
+      if(lower === 'speech examples'){ state.speechExamples = importedBullets(value); knownLabels.add(label); return; }
+      if(lower === '{{char}}\'s behavior during sex'){ state.sexBehavior = importedBullets(value); knownLabels.add(label); return; }
+      if(lower === 'goals'){ state.goals = importedBullets(value); knownLabels.add(label); return; }
+      if(lower === 'secrets & other information'){ state.secrets = importedBullets(value); knownLabels.add(label); return; }
+      addImportedCustomField(key,label,value); knownLabels.add(label);
+    });
+    if(key === 'personality') state.personality = importedBullets(body);
+    if(key === 'notes') state.notes = importedBullets(body);
+    if(key === 'relationships'){
+      importedBullets(body).forEach(line=>{
+        const rel = line.match(/^\*\*(.+?)\*\*\s*[—-]\s*(.*)$/);
+        if(rel){
+          if(rel[1] === '{{user}}') state.userRelationship = rel[2];
+          else state.relationships.push({name:rel[1],desc:rel[2]});
+        }
+      });
+    }
+    if(key === 'clothing' && !blocks.length && body) state.workOutfit = body;
+  });
+}
+
+function importTextFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    importCardText(String(reader.result || ''));
+    currentFile = null;
+    document.getElementById('cardNameInput').value = file.name.replace(/\.txt$/i,'');
+    currentSection = 'identity';
+    setStatus('Imported "' + file.name + '" into the matching sections.');
+    render();
+  };
+  reader.onerror = ()=>setStatus('Could not read that file.');
+  reader.readAsText(file);
+}
+
+let statusTimer = null;
+function setStatus(msg){
+  const el = document.getElementById('statusMsg');
+  el.textContent = msg;
+  clearTimeout(statusTimer);
+  statusTimer = setTimeout(()=>{ el.textContent=''; }, 4000);
+}
+
+function renderTabs(){
+  const host = document.getElementById('tabs');
+  host.innerHTML = '';
+  SECTIONS.forEach(sec=>{
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (sec.key===currentSection ? ' active' : '');
+    btn.textContent = sec.label;
+    btn.onclick = ()=>{ currentSection = sec.key; render(); };
+    host.appendChild(btn);
+  });
+}
+
+function fieldHTML(f){
+  const val = state[f.key] || '';
+  if(f.area){
+    return `<div class="field" style="grid-column:${f.wide?'1 / -1':'auto'}">
+      <label>${f.label}</label>
+      <textarea data-key="${f.key}">${escapeHtml(val)}</textarea>
+    </div>`;
+  }
+  return `<div class="field" style="grid-column:${f.wide?'1 / -1':'auto'}">
+    <label>${f.label}</label>
+    <input type="text" data-key="${f.key}" value="${escapeHtml(val)}">
+  </div>`;
+}
+
+function escapeHtml(s){
+  return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function listBlockHTML(f){
+  const items = state[f.key] && state[f.key].length ? state[f.key] : [''];
+  let rows = items.map((val, i)=>{
+    const tag = f.quoted ? 'input' : 'textarea';
+    const inner = f.quoted
+      ? `<input type="text" data-list="${f.key}" data-idx="${i}" value="${escapeHtml(val)}" placeholder="quoted line">`
+      : `<textarea data-list="${f.key}" data-idx="${i}" placeholder="item">${escapeHtml(val)}</textarea>`;
+    return `<div class="list-row">${inner}<button class="rm" data-rm="${f.key}" data-idx="${i}">✕</button></div>`;
+  }).join('');
+  return `<div class="list-block">
+    <label>${f.label}</label>
+    ${rows}
+    <button class="add-btn" data-add="${f.key}">+ add line</button>
+  </div>`;
+}
+
+function relationshipsHTML(){
+  const rows = state.relationships.map((r,i)=>{
+    return `<div class="rel-row">
+      <input type="text" class="rel-name" data-rel-name="${i}" value="${escapeHtml(r.name)}" placeholder="Name">
+      <input type="text" class="rel-desc" data-rel-desc="${i}" value="${escapeHtml(r.desc)}" placeholder="relationship description">
+      <button class="rm" data-rm-rel="${i}">✕</button>
+    </div>`;
+  }).join('');
+  return `<div class="list-block">
+    <label>Named Relationships</label>
+    ${rows}
+    <button class="add-btn" id="addRelBtn">+ add relationship</button>
+  </div>
+  <div class="list-block">
+    <label>{{user}} — relationship</label>
+    <div class="rel-row fixed">
+      <input type="text" class="rel-name" value="{{user}}" disabled style="flex:0 0 140px;">
+      <input type="text" class="rel-desc" id="userRelInput" value="${escapeHtml(state.userRelationship)}" placeholder="relationship to {{user}}">
+    </div>
+  </div>`;
+}
+
+function customFieldsHTML(section){
+  const rows = state.customFields[section] || [];
+  const fields = rows.map((field,i)=>`<div class="custom-row">
+    <input type="text" data-custom-label="${i}" placeholder="Field label (e.g. Weight)" value="${escapeHtml(field.label)}">
+    <textarea data-custom-value="${i}" placeholder="Value — bullets and line breaks are welcome">${escapeHtml(field.value)}</textarea>
+    <button class="rm" data-rm-custom="${i}">✕</button>
+  </div>`).join('');
+  return `<div class="custom-fields"><label>Extra fields for this section</label>
+    ${fields}<button class="add-btn" id="addCustomField">+ add custom field</button></div>`;
+}
+
+function customSectionsHTML(){
+  const rows = state.customSections.map((section,i)=>{
+    const subsections = (section.subsections || []).map((sub,j)=>`<div class="custom-subsection">
+      <input type="text" data-subsection-title="${i}:${j}" placeholder="Subsection title (e.g. Demon Form)" value="${escapeHtml(sub.title)}">
+      <textarea data-subsection-body="${i}:${j}" placeholder="Subsection details">${escapeHtml(sub.body)}</textarea>
+      <button class="rm" data-rm-subsection="${i}:${j}">✕ remove subsection</button>
+    </div>`).join('');
+    return `<div class="custom-section">
+    <input type="text" data-custom-section-title="${i}" placeholder="Section title (e.g. Forms & Transformations)" value="${escapeHtml(section.title)}">
+    <textarea data-custom-section-body="${i}" placeholder="Write freely here. Markdown-style bullets, headings and timelines are preserved in the exported file.">${escapeHtml(section.body)}</textarea>
+    <div class="subsection-list"><label>Subsections</label>${subsections}<button class="add-btn" data-add-subsection="${i}">+ add subsection</button></div>
+    <button class="rm" data-rm-custom-section="${i}">✕ remove section</button>
+  </div>`;
+  }).join('');
+  return `<h2>Forms, Timelines & More</h2><div class="hint">Use this for any structure the standard card does not cover: alternate forms, eras, transformation rules, lore, or a custom template section.</div>${rows}<button class="add-btn" id="addCustomSection">+ add custom section</button>`;
+}
+
+function renderPanel(){
+  const host = document.getElementById('panelHost');
+  const sec = SECTIONS.find(s=>s.key===currentSection);
+  let html = `<h2>${sec.label}</h2>`;
+
+  if(currentSection === 'custom'){
+    host.innerHTML = customSectionsHTML();
+    bindCustomSectionEvents();
+    return;
+  }
+
+  if(currentSection === 'relationships'){
+    html += `<div class="hint">One row per named relationship. {{user}}'s row is always included.</div>`;
+    html += relationshipsHTML();
+    host.innerHTML = html;
+    bindRelationshipEvents();
+    return;
+  }
+
+  const fixed = FIXED_FIELDS.filter(f=>f.section===currentSection);
+  const lists = LIST_FIELDS.filter(f=>f.section===currentSection);
+
+  if(fixed.length){
+    html += `<div class="field-grid">${fixed.map(fieldHTML).join('')}</div>`;
+  }
+  if(lists.length){
+    html += lists.map(listBlockHTML).join('');
+  }
+  html += customFieldsHTML(currentSection);
+  host.innerHTML = html;
+  bindPanelEvents();
+}
+
+function bindPanelEvents(){
+  document.querySelectorAll('[data-key]').forEach(el=>{
+    el.addEventListener('input', e=>{
+      state[e.target.dataset.key] = e.target.value;
+      updateExport();
+    });
+  });
+  document.querySelectorAll('[data-list]').forEach(el=>{
+    el.addEventListener('input', e=>{
+      const k = e.target.dataset.list, i = +e.target.dataset.idx;
+      state[k][i] = e.target.value;
+      updateExport();
+    });
+  });
+  document.querySelectorAll('[data-rm]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const k = e.target.dataset.rm, i = +e.target.dataset.idx;
+      state[k].splice(i,1);
+      if(state[k].length===0) state[k]=[''];
+      render();
+    });
+  });
+  document.querySelectorAll('[data-add]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      const k = e.target.dataset.add;
+      state[k].push('');
+      render();
+      updateExport();
+    });
+  });
+  document.querySelectorAll('[data-custom-label]').forEach(el=>{
+    el.addEventListener('input', e=>{ state.customFields[currentSection][+e.target.dataset.customLabel].label = e.target.value; updateExport(); });
+  });
+  document.querySelectorAll('[data-custom-value]').forEach(el=>{
+    el.addEventListener('input', e=>{ state.customFields[currentSection][+e.target.dataset.customValue].value = e.target.value; updateExport(); });
+  });
+  document.querySelectorAll('[data-rm-custom]').forEach(el=>{
+    el.addEventListener('click', e=>{ state.customFields[currentSection].splice(+e.target.dataset.rmCustom,1); render(); });
+  });
+  const addCustomField = document.getElementById('addCustomField');
+  if(addCustomField) addCustomField.addEventListener('click', ()=>{ state.customFields[currentSection].push({label:'',value:''}); render(); });
+}
+
+function bindCustomSectionEvents(){
+  document.querySelectorAll('[data-custom-section-title]').forEach(el=>el.addEventListener('input',e=>{ state.customSections[+e.target.dataset.customSectionTitle].title=e.target.value; updateExport(); }));
+  document.querySelectorAll('[data-custom-section-body]').forEach(el=>el.addEventListener('input',e=>{ state.customSections[+e.target.dataset.customSectionBody].body=e.target.value; updateExport(); }));
+  document.querySelectorAll('[data-rm-custom-section]').forEach(el=>el.addEventListener('click',e=>{ state.customSections.splice(+e.target.dataset.rmCustomSection,1); render(); }));
+  document.querySelectorAll('[data-subsection-title]').forEach(el=>el.addEventListener('input',e=>{ const [section,sub] = e.target.dataset.subsectionTitle.split(':').map(Number); state.customSections[section].subsections[sub].title=e.target.value; updateExport(); }));
+  document.querySelectorAll('[data-subsection-body]').forEach(el=>el.addEventListener('input',e=>{ const [section,sub] = e.target.dataset.subsectionBody.split(':').map(Number); state.customSections[section].subsections[sub].body=e.target.value; updateExport(); }));
+  document.querySelectorAll('[data-rm-subsection]').forEach(el=>el.addEventListener('click',e=>{ const [section,sub] = e.target.dataset.rmSubsection.split(':').map(Number); state.customSections[section].subsections.splice(sub,1); render(); }));
+  document.querySelectorAll('[data-add-subsection]').forEach(el=>el.addEventListener('click',e=>{ const section = +e.target.dataset.addSubsection; state.customSections[section].subsections.push({title:'',body:''}); render(); }));
+  const addCustomSection = document.getElementById('addCustomSection');
+  if(addCustomSection) addCustomSection.addEventListener('click',()=>{ state.customSections.push({title:'',body:'',subsections:[]}); render(); });
+}
+
+function bindRelationshipEvents(){
+  document.querySelectorAll('[data-rel-name]').forEach(el=>{
+    el.addEventListener('input', e=>{
+      state.relationships[+e.target.dataset.relName].name = e.target.value;
+      updateExport();
+    });
+  });
+  document.querySelectorAll('[data-rel-desc]').forEach(el=>{
+    el.addEventListener('input', e=>{
+      state.relationships[+e.target.dataset.relDesc].desc = e.target.value;
+      updateExport();
+    });
+  });
+  document.querySelectorAll('[data-rm-rel]').forEach(el=>{
+    el.addEventListener('click', e=>{
+      state.relationships.splice(+e.target.dataset.rmRel, 1);
+      render(); updateExport();
+    });
+  });
+  const addBtn = document.getElementById('addRelBtn');
+  if(addBtn) addBtn.addEventListener('click', ()=>{
+    state.relationships.push({name:'', desc:''});
+    render(); updateExport();
+  });
+  const userRel = document.getElementById('userRelInput');
+  if(userRel) userRel.addEventListener('input', e=>{
+    state.userRelationship = e.target.value;
+    updateExport();
+  });
+}
+
+function nonEmpty(arr){ return (arr||[]).filter(x=>x && x.trim()); }
+
+function appendCustomFields(lines, section, afterBullets){
+  const rows = (state.customFields && state.customFields[section]) || [];
+  const valid = rows.filter(field=>field.label && field.label.trim());
+  if(afterBullets && valid.length) lines.push('');
+  valid.forEach(field=>{
+    lines.push(`**${field.label.trim()}**: ${field.value || ''}\n`);
+  });
+}
+
+function buildExport(){
+  const f = state;
+  const lines = [];
+  lines.push('## IDENTITY\n');
+  lines.push(`**Name**: ${f.name}\n`);
+  lines.push(`**Nicknames**: ${f.nicknames}\n`);
+  lines.push(`**Pronouns**: ${f.pronouns}\n`);
+  lines.push(`**Sex / Gender**: ${f.sexGender}\n`);
+  lines.push(`**Sexual Orientation**: ${f.orientation}\n`);
+  lines.push(`**Species**: ${f.species}\n`);
+  lines.push(`**Ethnicity:** ${f.ethnicity}\n`);
+  lines.push(`**Age**: ${f.age}\n`);
+  lines.push(`**Occupation**: ${f.occupation}\n`);
+  appendCustomFields(lines, 'identity');
+  lines.push('\n---\n\n## APPEARANCE\n');
+  lines.push(`**Height**: ${f.height}\n`);
+  lines.push(`**Build**: ${f.build}\n`);
+  lines.push(`**Hair**: ${f.hair}\n`);
+  lines.push(`**Eyes**: ${f.eyes}\n`);
+  lines.push(`**Skin Tone**: ${f.skin}\n`);
+  lines.push(`**Scent**: ${f.scent}\n`);
+  lines.push(`**Notable Features**: ${f.notable}\n`);
+  lines.push(`**Privates**: ${f.privates}\n`);
+  appendCustomFields(lines, 'appearance');
+  lines.push('\n---\n\n## CLOTHING\n');
+  lines.push(`**Work Outfit**: ${f.workOutfit}\n`);
+  lines.push(`**Casual Outfit**: ${f.casualOutfit}\n`);
+  appendCustomFields(lines, 'clothing');
+  lines.push('\n---\n\n## PERSONALITY\n');
+  nonEmpty(f.personality).forEach(p=>lines.push(`- ${p}`));
+  appendCustomFields(lines, 'personality', true);
+  lines.push('\n---\n\n## SPEECH\n');
+  lines.push(`**Primary Language**: ${f.primaryLang}\n`);
+  lines.push(`**Accent & Manner of Speech**: ${f.accent}\n`);
+  lines.push('**Speech Examples**:\n');
+  nonEmpty(f.speechExamples).forEach(s=>lines.push(`- ${s}`));
+  appendCustomFields(lines, 'speech', true);
+  lines.push('\n---\n\n## RELATIONSHIPS\n');
+  (f.relationships||[]).forEach(r=>{
+    if(r.name || r.desc) lines.push(`- **${r.name}** — ${r.desc}`);
+  });
+  lines.push(`- **{{user}}** — ${f.userRelationship}`);
+  appendCustomFields(lines, 'relationships', true);
+  lines.push('\n---\n\n## SETTING & BACKGROUND\n');
+  lines.push(`**Time**: ${f.time}\n`);
+  lines.push(`**Location**: ${f.location}\n`);
+  lines.push(`**Backstory**: ${f.backstory}\n`);
+  lines.push(`**Current Story / Status Quo**: ${f.currentStory}\n`);
+  appendCustomFields(lines, 'setting');
+  lines.push('\n---\n\n## TRAITS & PREFERENCES\n');
+  lines.push(`**Quirks**: ${f.quirks}\n`);
+  lines.push(`**Likes**: ${f.likes}\n`);
+  lines.push(`**Dislikes**: ${f.dislikes}\n`);
+  lines.push(`**Hobbies**: ${f.hobbies}\n`);
+  appendCustomFields(lines, 'traits');
+  lines.push('\n---\n\n## INTIMACY & DESIRE\n');
+  lines.push(`**Kinks**: ${f.kinks}\n`);
+  lines.push(`**Boundaries / Limits**: ${f.boundaries}\n`);
+  lines.push("**{{char}}'s Behavior During Sex**:\n");
+  nonEmpty(f.sexBehavior).forEach(s=>lines.push(`- ${s}`));
+  appendCustomFields(lines, 'intimacy', true);
+  (f.customSections || []).forEach(section=>{
+    if(section.title && section.title.trim()){
+      lines.push(`\n---\n\n## ${section.title.trim()}\n`);
+      if(section.body && section.body.trim()) lines.push(`\n${section.body.trim()}\n`);
+      (section.subsections || []).forEach(sub=>{
+        if(sub.title && sub.title.trim()){
+          lines.push(`\n**${sub.title.trim()}**:\n`);
+          if(sub.body && sub.body.trim()) lines.push(`\n${sub.body.trim()}\n`);
+        }
+      });
+    }
+  });
+  lines.push('\n---\n\n## GOALS & SECRETS\n');
+  lines.push('**Goals**:');
+  nonEmpty(f.goals).forEach(g=>lines.push(`- ${g}`));
+  lines.push('\n**Secrets & Other Information**:');
+  nonEmpty(f.secrets).forEach(s=>lines.push(`- ${s}`));
+  appendCustomFields(lines, 'goals', true);
+  lines.push('\n---\n\n## NOTES\n');
+  nonEmpty(f.notes).forEach(n=>lines.push(`- ${n}`));
+  appendCustomFields(lines, 'notes', true);
+  lines.push('\n---');
+  return lines.join('\n');
+}
+
+function calcCompletion(){
+  const allVals = FIXED_FIELDS.map(f=>state[f.key]||'');
+  const filled = allVals.filter(v=>v.trim()).length;
+  const pct = filled / allVals.length;
+  const stamp = document.getElementById('completionStamp');
+  if(pct >= 0.9){ stamp.textContent='COMPLETE'; stamp.style.borderColor='var(--sage)'; stamp.style.color='var(--sage)'; }
+  else if(pct >= 0.4){ stamp.textContent='IN PROGRESS'; stamp.style.borderColor='var(--brass)'; stamp.style.color='var(--brass)'; }
+  else { stamp.textContent='DRAFT'; stamp.style.borderColor='var(--stamp-red)'; stamp.style.color='var(--stamp-red)'; }
+}
+
+function updateExport(){
+  document.getElementById('exportBox').value = buildExport();
+  calcCompletion();
+}
+
+function render(){
+  renderTabs();
+  renderPanel();
+  updateExport();
+}
+
+document.getElementById('saveBtn').addEventListener('click', saveCard);
+document.getElementById('loadBtn').addEventListener('click', openCard);
+document.getElementById('importBtn').addEventListener('click', ()=>document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', e=>{
+  importTextFile(e.target.files && e.target.files[0]);
+  e.target.value = '';
+});
+document.getElementById('deleteBtn').addEventListener('click', deleteCard);
+document.getElementById('duplicateBtn').addEventListener('click', duplicateCard);
+document.getElementById('exportJsonBtn').addEventListener('click', exportCardJson);
+document.getElementById('importJsonBtn').addEventListener('click', ()=>document.getElementById('importJsonFile').click());
+document.getElementById('importJsonFile').addEventListener('change', e=>{
+  importCardJson(e.target.files && e.target.files[0]);
+  e.target.value = '';
+});
+document.getElementById('copyBtn').addEventListener('click', ()=>{
+  const box = document.getElementById('exportBox');
+  box.select();
+  try{ document.execCommand('copy'); setStatus('Copied.'); }catch(e){ setStatus('Copy failed — select and copy manually.'); }
+});
+document.getElementById('downloadBtn').addEventListener('click', ()=>{
+  const name = (document.getElementById('cardNameInput').value.trim() || 'character') + '.txt';
+  const blob = new Blob([buildExport()], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+(async function init(){
+  await loadCardList();
+  render();
+})();
+
+})();
+</script>
+
+
+</body></html>

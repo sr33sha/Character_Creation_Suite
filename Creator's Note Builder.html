@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<!-- saved from url=(0088)file:///C:/Users/srish/Documents/Codex/2026-07-22/see/outputs/creators-note-builder.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Creator's Note Builder</title>
+<style>
+  :root{--ink:#12100d;--panel:#1d1811;--raised:#251f16;--hair:#443826;--paper:#eee4d3;--dim:#b8a991;--brass:#d3a451;}
+  *{box-sizing:border-box} body{margin:0;background:radial-gradient(circle at top left,#241d13,var(--ink) 55%);color:var(--paper);font:14px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;min-height:100vh}
+  .wrap{width:min(1500px,100%);margin:auto;padding:28px 22px 64px}.mast{border-bottom:1px solid var(--hair);margin-bottom:22px;padding-bottom:15px}.mast h1{font:600 2rem Georgia,serif;color:var(--paper);margin:0}.mast p{margin:4px 0 0;color:var(--brass);font-size:.76rem;letter-spacing:2px;text-transform:uppercase}
+  .layout{display:grid;grid-template-columns:minmax(320px,.85fr) minmax(420px,1.15fr);gap:22px;align-items:start}.box{background:var(--raised);border:1px solid var(--hair);border-radius:7px;padding:19px}.box h2{font:600 1.12rem Georgia,serif;color:var(--brass);margin:0 0 13px}.field{margin-bottom:13px}.field label,.section-label{display:block;color:var(--dim);font-size:.71rem;letter-spacing:1.1px;text-transform:uppercase;margin:0 0 5px}input[type=text],textarea{width:100%;border:1px solid var(--hair);border-radius:4px;background:#120f0b;color:var(--paper);padding:9px;font:13px/1.45 ui-monospace,SFMono-Regular,Consolas,monospace}textarea{min-height:100px;resize:vertical}input:focus,textarea:focus{outline:0;border-color:var(--brass)}
+  .colors{display:grid;grid-template-columns:1fr 1fr;gap:9px 13px;margin:17px 0}.color{display:flex;align-items:center;justify-content:space-between;gap:9px}.color label{font-size:.71rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px}.color input{width:38px;height:29px;padding:1px;border:1px solid var(--hair);border-radius:4px;background:#120f0b}.section-editor{border-top:1px dashed var(--hair);padding-top:16px;margin-top:18px}.entry{border:1px solid var(--hair);border-radius:5px;background:rgba(0,0,0,.12);padding:11px;margin-bottom:10px}.entry-head{display:flex;gap:8px;margin-bottom:8px}.entry-head input{flex:1}.small{padding:7px 9px;font-size:.73rem;white-space:nowrap}.add{margin-top:1px}.btn{background:#282015;color:var(--paper);border:1px solid var(--hair);border-radius:4px;padding:8px 12px;font:inherit;font-size:.76rem;cursor:pointer}.btn:hover{border-color:var(--brass);color:#f0c16e}.btn.primary{background:var(--brass);border-color:var(--brass);color:#15110b;font-weight:700}.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .preview-shell{position:sticky;top:16px}.preview-area{background:#090806;border:1px solid var(--hair);border-radius:7px;padding:12px}.note-preview{max-width:600px;margin:auto;padding:15px;font-family:Arial,sans-serif;line-height:1.6}.note-title{text-align:center;font-size:24px;font-weight:bold;margin-bottom:6px}.note-quote{text-align:center;margin:0 0 20px}.note-panel{border-radius:10px;margin:12px 0;overflow:hidden}.note-panel summary{font-size:18px;font-weight:bold;padding:12px;cursor:pointer;list-style:none;display:flex;justify-content:center;align-items:center;gap:8px}.note-panel summary::-webkit-details-marker{display:none}.arrow{font-size:12px}.note-body{padding:0 15px 15px;font-size:14px;text-align:center;white-space:pre-wrap}.note-footer{text-align:center;font-size:14px;opacity:.8;margin:18px 0 0;white-space:pre-wrap}.export{margin-top:22px}.export textarea{min-height:280px}.hint{color:var(--dim);font-size:.78rem;margin:-4px 0 14px}@media(max-width:940px){.layout{grid-template-columns:1fr}.preview-shell{position:static}}@media(max-width:520px){.wrap{padding:18px 13px 50px}.colors{grid-template-columns:1fr}.entry-head{flex-wrap:wrap}.mast h1{font-size:1.7rem}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="mast"><h1>Creator's Note</h1><p>Accordion note builder</p></header>
+  <div class="layout">
+    <section class="box">
+      <h2>Note Details</h2>
+      <div class="field"><label for="name">Character / note title</label><input id="name" type="text" value="CHARACTER NAME"></div>
+      <div class="field"><label for="quote">Quote (optional)</label><textarea id="quote" rows="3" placeholder="“A memorable line goes here.”"></textarea></div>
+      <div class="field"><label for="footer">Closing note (optional)</label><textarea id="footer" rows="3" placeholder="P.S. or an extra note for the reader."></textarea></div>
+      <div class="section-editor">
+        <span class="section-label">Colour palette</span>
+        <div class="colors">
+          <div class="color"><label>Body text</label><input id="textColor" type="color" value="#f5efe4"></div>
+          <div class="color"><label>Title text</label><input id="titleColor" type="color" value="#d8bf82"></div>
+          <div class="color"><label>Panel background</label><input id="panelColor" type="color" value="#2b241d"></div>
+          <div class="color"><label>Border</label><input id="borderColor" type="color" value="#7f9252"></div>
+          <div class="color"><label>Glow</label><input id="glowColor" type="color" value="#7f9252"></div>
+          <div class="color"><label>Quote text</label><input id="quoteColor" type="color" value="#f5efe4"></div>
+        </div>
+      </div>
+      <div class="section-editor"><span class="section-label">Expandable sections</span><div id="entries"><div class="entry"><div class="entry-head"><input type="text" data-title="0" value="THE STORY" placeholder="Section heading"><button class="btn small" data-remove="0">Remove</button></div><textarea data-body="0" placeholder="Section text">Write a short hook for the character and their world.</textarea></div><div class="entry"><div class="entry-head"><input type="text" data-title="1" value="THE SITUATION" placeholder="Section heading"><button class="btn small" data-remove="1">Remove</button></div><textarea data-body="1" placeholder="Section text">Describe where the roleplay begins and what brings {{user}} into it.</textarea></div><div class="entry"><div class="entry-head"><input type="text" data-title="2" value="SCENARIO GUIDANCE" placeholder="Section heading"><button class="btn small" data-remove="2">Remove</button></div><textarea data-body="2" placeholder="Section text">Tell the reader what is flexible, what choices they have, or which introductions are available.</textarea></div><div class="entry"><div class="entry-head"><input type="text" data-title="3" value="TRIGGER WARNING" placeholder="Section heading"><button class="btn small" data-remove="3">Remove</button></div><textarea data-body="3" placeholder="Section text">State content warnings, boundaries, or simply “None.”</textarea></div></div><button class="btn add" id="addSection">+ add section</button></div>
+      <div class="actions"><button class="btn primary" id="copy">Copy HTML</button><button class="btn" id="download">Download .html</button><button class="btn" id="importBtn">Import HTML</button><input type="file" id="importFile" accept=".html,.htm,text/html" style="display:none"></div>
+      <p class="hint" id="importStatus" style="margin-top:6px"></p>
+    </section>
+
+    <section class="preview-shell"><div class="box"><h2>Live Preview</h2><p class="hint">Open a panel to check its finished look.</p><div class="preview-area"><div id="preview"><div class="note-preview" style="color:#f5efe4"><div class="note-title" style="color:#d8bf82">CHARACTER NAME</div><details class="note-panel" style="background:#2b241d;border:1px solid #7f9252;box-shadow:0 0 10px #7f925255"><summary style="color:#d8bf82"><span>THE STORY</span><span class="arrow" style="color:#7f9252">▼</span></summary><div class="note-body">Write a short hook for the character and their world.</div></details><details class="note-panel" style="background:#2b241d;border:1px solid #7f9252;box-shadow:0 0 10px #7f925255"><summary style="color:#d8bf82"><span>THE SITUATION</span><span class="arrow" style="color:#7f9252">▼</span></summary><div class="note-body">Describe where the roleplay begins and what brings {{user}} into it.</div></details><details class="note-panel" style="background:#2b241d;border:1px solid #7f9252;box-shadow:0 0 10px #7f925255"><summary style="color:#d8bf82"><span>SCENARIO GUIDANCE</span><span class="arrow" style="color:#7f9252">▼</span></summary><div class="note-body">Tell the reader what is flexible, what choices they have, or which introductions are available.</div></details><details class="note-panel" style="background:#2b241d;border:1px solid #7f9252;box-shadow:0 0 10px #7f925255"><summary style="color:#d8bf82"><span>TRIGGER WARNING</span><span class="arrow" style="color:#7f9252">▼</span></summary><div class="note-body">State content warnings, boundaries, or simply “None.”</div></details></div></div></div></div></section>
+  </div>
+  <section class="box export"><h2>Generated HTML</h2><textarea id="output" readonly=""></textarea></section>
+</main>
+<script>
+(()=>{
+  const defaults=[['THE STORY','Write a short hook for the character and their world.'],['THE SITUATION','Describe where the roleplay begins and what brings {{user}} into it.'],['SCENARIO GUIDANCE','Tell the reader what is flexible, what choices they have, or which introductions are available.'],['TRIGGER WARNING','State content warnings, boundaries, or simply “None.”']];
+  let sections=defaults.map(([title,body])=>({title,body}));
+  const $=id=>document.getElementById(id);
+  const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const br=s=>esc(s).replace(/\n/g,'<br>');
+  function colors(){return {text:$('textColor').value,title:$('titleColor').value,panel:$('panelColor').value,border:$('borderColor').value,glow:$('glowColor').value,quote:$('quoteColor').value}}
+  function renderEditors(){
+    $('entries').innerHTML=sections.map((section,i)=>`<div class="entry"><div class="entry-head"><input type="text" data-title="${i}" value="${esc(section.title)}" placeholder="Section heading"><button class="btn small" data-remove="${i}">Remove</button></div><textarea data-body="${i}" placeholder="Section text">${esc(section.body)}</textarea></div>`).join('');
+    document.querySelectorAll('[data-title]').forEach(el=>el.oninput=e=>{sections[+e.target.dataset.title].title=e.target.value;update()});
+    document.querySelectorAll('[data-body]').forEach(el=>el.oninput=e=>{sections[+e.target.dataset.body].body=e.target.value;update()});
+    document.querySelectorAll('[data-remove]').forEach(el=>el.onclick=e=>{sections.splice(+e.target.dataset.remove,1);renderEditors();update()});
+  }
+  function fragment(){
+    const c=colors(),name=$('name').value.trim()||'CHARACTER NAME',quote=$('quote').value.trim(),footer=$('footer').value.trim();
+    const panels=sections.filter(s=>s.title.trim()).map(s=>`  <details style="background:${c.panel}; border-radius:10px; margin:12px 0; border:1px solid ${c.border}; box-shadow:0 0 10px ${c.glow}40; overflow:hidden;">\n    <summary style="font-size:18px; font-weight:bold; color:${c.title}; padding:12px; cursor:pointer; list-style:none; display:flex; justify-content:center; align-items:center;">\n      <span>${esc(s.title)}</span><span style="color:${c.border}; margin-left:8px; font-size:12px;">▼</span>\n    </summary>\n    <div style="margin:0; padding:0 15px 15px; font-size:14px; text-align:center; white-space:pre-wrap;">${esc(s.body)}</div>\n  </details>`).join('\n\n');
+    return `<div style="max-width:600px; width:100%; margin:0 auto; box-sizing:border-box; background:transparent; color:${c.text}; font-family:sans-serif; line-height:1.6; padding:15px;">\n\n  <div style="text-align:center; font-size:24px; font-weight:bold; margin-bottom:6px; color:${c.title};">${esc(name)}</div>${quote?`\n\n  <p style="text-align:center; margin-bottom:20px; color:${c.quote};"><i>${br(quote)}</i></p>`:''}\n\n${panels}${footer?`\n\n  <p style="margin-top:18px; text-align:center; font-size:14px; opacity:.8; white-space:pre-wrap;"><i>${esc(footer)}</i></p>`:''}\n\n</div>`;
+  }
+  function update(){
+    const c=colors(),name=$('name').value.trim()||'CHARACTER NAME',quote=$('quote').value.trim(),footer=$('footer').value.trim();
+    $('preview').innerHTML=`<div class="note-preview" style="color:${c.text}"><div class="note-title" style="color:${c.title}">${esc(name)}</div>${quote?`<p class="note-quote" style="color:${c.quote}"><i>${br(quote)}</i></p>`:''}${sections.filter(s=>s.title.trim()).map(s=>`<details class="note-panel" style="background:${c.panel};border:1px solid ${c.border};box-shadow:0 0 10px ${c.glow}55"><summary style="color:${c.title}"><span>${esc(s.title)}</span><span class="arrow" style="color:${c.border}">▼</span></summary><div class="note-body">${br(s.body)}</div></details>`).join('')}${footer?`<p class="note-footer"><i>${br(footer)}</i></p>`:''}</div>`;
+    $('output').value=fragment();
+  }
+  ['name','quote','footer','textColor','titleColor','panelColor','borderColor','glowColor','quoteColor'].forEach(id=>$(id).addEventListener('input',update));
+  $('addSection').onclick=()=>{sections.push({title:'NEW SECTION',body:''});renderEditors();update()};
+  $('copy').onclick=async()=>{try{await navigator.clipboard.writeText($('output').value);$('copy').textContent='Copied!';setTimeout(()=>$('copy').textContent='Copy HTML',1500)}catch{ $('output').select();document.execCommand('copy')}};
+  $('download').onclick=()=>{const blob=new Blob([$('output').value],{type:'text/html'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(($('name').value.trim()||'creators-note').replace(/[^a-z0-9-_]+/gi,'-'))+'.html';a.click();URL.revokeObjectURL(a.href)};
+  function extractText(el){
+    if(!el) return '';
+    const html=el.innerHTML.replace(/<br\s*\/?>/gi,'\n');
+    const tmp=document.createElement('div');
+    tmp.innerHTML=html;
+    return tmp.textContent.trim();
+  }
+  function colorFrom(styleAttr, propRegex){
+    if(!styleAttr) return null;
+    const m=styleAttr.match(propRegex);
+    return m ? ('#'+m[1].replace(/^#/,'')).slice(0,7) : null;
+  }
+  function parseImportedHTML(htmlStr){
+    const doc=new DOMParser().parseFromString(htmlStr,'text/html');
+    const container=doc.querySelector('div[style*="max-width:600px"]') || doc.body.firstElementChild;
+    if(!container) throw new Error('Could not find a note container in that file.');
+    const containerStyle=container.getAttribute('style')||'';
+    const textColor=colorFrom(containerStyle,/(?:^|;)\s*color:\s*(#[0-9a-fA-F]{3,8})/);
+
+    let name='',titleColor=null,quote='',quoteColor=null,footer='';
+    const detailsEls=[];
+    let seenDetails=false,titleDiv=null;
+
+    Array.from(container.children).forEach(child=>{
+      const tag=child.tagName.toLowerCase();
+      if(tag==='details'){ detailsEls.push(child); seenDetails=true; return; }
+      if(tag==='div' && !titleDiv){ titleDiv=child; return; }
+      if(tag==='p'){
+        const italic=child.querySelector('i')||child;
+        const st=child.getAttribute('style')||'';
+        if(!seenDetails){
+          quote=extractText(italic);
+          quoteColor=colorFrom(st,/color:\s*(#[0-9a-fA-F]{3,8})/);
+        } else {
+          footer=extractText(italic);
+        }
+      }
+    });
+
+    if(titleDiv){
+      name=extractText(titleDiv);
+      titleColor=colorFrom(titleDiv.getAttribute('style')||'',/color:\s*(#[0-9a-fA-F]{3,8})/);
+    }
+
+    let panelColor=null,borderColor=null,glowColor=null;
+    const sections=detailsEls.map(d=>{
+      const st=d.getAttribute('style')||'';
+      if(!panelColor){
+        panelColor=colorFrom(st,/background:\s*(#[0-9a-fA-F]{3,8})/);
+        borderColor=colorFrom(st,/border:\s*1px solid\s*(#[0-9a-fA-F]{3,8})/);
+        glowColor=colorFrom(st,/box-shadow:[^;]*?(#[0-9a-fA-F]{6,8})/);
+      }
+      const summary=d.querySelector('summary');
+      const span=summary ? summary.querySelector('span') : null;
+      const title=span ? extractText(span) : '';
+      const bodyDiv=Array.from(d.children).find(c=>c.tagName.toLowerCase()==='div');
+      const body=bodyDiv ? extractText(bodyDiv) : '';
+      return {title,body};
+    });
+
+    if(!detailsEls.length) throw new Error('No expandable sections found in that file.');
+
+    return {name,quote,footer,textColor,titleColor,quoteColor,panelColor,borderColor,glowColor,sections};
+  }
+  function applyImport(data){
+    if(data.name) $('name').value=data.name;
+    $('quote').value=data.quote||'';
+    $('footer').value=data.footer||'';
+    if(data.textColor) $('textColor').value=data.textColor;
+    if(data.titleColor) $('titleColor').value=data.titleColor;
+    if(data.quoteColor) $('quoteColor').value=data.quoteColor;
+    if(data.panelColor) $('panelColor').value=data.panelColor;
+    if(data.borderColor) $('borderColor').value=data.borderColor;
+    if(data.glowColor) $('glowColor').value=data.glowColor;
+    if(data.sections && data.sections.length) sections=data.sections;
+    renderEditors();
+    update();
+  }
+  $('importBtn').onclick=()=>$('importFile').click();
+  $('importFile').addEventListener('change',e=>{
+    const file=e.target.files[0];
+    if(!file) return;
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      try{
+        const data=parseImportedHTML(ev.target.result);
+        applyImport(data);
+        $('importStatus').textContent='Imported "'+(data.name||'note')+'" — '+data.sections.length+' section(s) loaded.';
+        $('importStatus').style.color='';
+      }catch(err){
+        $('importStatus').textContent='Import failed: '+err.message;
+        $('importStatus').style.color='#c96a52';
+      }
+    };
+    reader.readAsText(file);
+    e.target.value='';
+  });
+  renderEditors();update();
+})();
+</script>
+
+
+</body></html>
